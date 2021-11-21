@@ -2,6 +2,7 @@ const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const exphbs = require('express-handlebars')
+const methodOverride = require('method-override')
 const routes = require('./routes')
 
 const usePassport = require('./config/passport')
@@ -14,11 +15,13 @@ app.set('view engine', '.hbs')
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 app.use(session({
   secret: 'ilovecoding',
   resave: false,
   saveUninitialized: true
 }))
+
 usePassport(app)
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
