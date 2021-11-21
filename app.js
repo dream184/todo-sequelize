@@ -1,9 +1,11 @@
 const express = require('express')
-const exphbs = require('express-handlebars')
-const bodyParser = require('body-parser')
 const session = require('express-session')
+const bodyParser = require('body-parser')
+const exphbs = require('express-handlebars')
+const routes = require('./routes')
+
 const usePassport = require('./config/passport')
-const routes = require('./routes/')
+
 const app = express()
 const port = 3000
 
@@ -18,6 +20,11 @@ app.use(session({
   saveUninitialized: true
 }))
 usePassport(app)
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next()
+})
 
 app.use(routes)
 
